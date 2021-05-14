@@ -18,6 +18,7 @@ class McClient:
     def _out_reader(self):
         for line in iter(self.proc.stdout.readline, b""):
             self.outq.append(line)
+            print(line)
 
     def launch(self):
         if self.proc:
