@@ -9,7 +9,8 @@ load_dotenv()
 
 
 EXTENSIONS = [
-    "app.cogs.manage"
+    "app.cogs.manage",
+    "app.cogs.player",
 ]
 
 
@@ -19,7 +20,8 @@ class CCBot(commands.Bot):
             command_prefix="cc!",
             case_insensitive=True
         )
-        self.mc = McClient()
+        self.mc = McClient("~/circuitcraft")
+        self.rc = McClient("~/registercraft")
 
     def run(self):
         self.mc.launch()

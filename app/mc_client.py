@@ -10,7 +10,9 @@ class AlreadyRunnning(Exception):
 
 
 class McClient:
-    def __init__(self):
+    def __init__(self, path: str):
+        self.path = path
+
         self.proc: subprocess.Popen[str] = None
 
         self.outq: List[str] = []
@@ -27,7 +29,7 @@ class McClient:
             raise AlreadyRunnning()
 
         self.proc = subprocess.Popen(
-            ["cd ~/circuitcraft && ./bedrock_server"],
+            [f"cd {self.path} && ./bedrock_server"],
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
