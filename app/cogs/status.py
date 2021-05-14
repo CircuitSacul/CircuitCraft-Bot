@@ -10,6 +10,7 @@ if TYPE_CHECKING:
 class Status(commands.Cog):
     def __init__(self, bot: "CCBot"):
         self.bot = bot
+        self.update_status.start()
 
     @tasks.loop(minutes=5)
     async def update_status(self):
