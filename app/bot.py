@@ -25,6 +25,7 @@ class CCBot(commands.Bot):
 
     def run(self):
         self.mc.launch()
+        self.rc.launch()
         for ext in EXTENSIONS:
             self.load_extension(ext)
         super().run(os.getenv("TOKEN"))
