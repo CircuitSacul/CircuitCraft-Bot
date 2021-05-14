@@ -16,8 +16,6 @@ class Status(commands.Cog):
     async def update_status(self):
         await self.bot.wait_until_ready()
         string = await self.bot.mc.run_command("list")
-        if not isinstance(string, str):
-            return
         number = re.search(
             r"There are (\d)\/\d+ players online", string
         ).group(1)
