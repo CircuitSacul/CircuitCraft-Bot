@@ -21,7 +21,7 @@ class CCBot(commands.Bot):
             case_insensitive=True
         )
         self.mc = McClient("~/circuitcraft")
-        self.rc = McClient("~/registercraft")
+        self.rc = McClient("~/verifycraft")
 
     def run(self):
         self.mc.launch()
