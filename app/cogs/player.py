@@ -12,7 +12,7 @@ class AlreadyVerified(Exception):
     def __init__(self, curr_username: str):
         super().__init__(
             f"You're already registered as {curr_username}! "
-            "Use mc!unregister if you want to unregister."
+            "Use cc!unregister if you want to unregister."
         )
 
 
@@ -83,9 +83,9 @@ class Player(commands.Cog):
             await ctx.send(
                 "Please follow these steps:\n"
                 " - Join the server at IP `144.172.75.195` and port `5555`.\n"
-                f" - Run `mc!register {mc_username}` again.\n"
+                f" - Run `cc!register {mc_username}` again.\n"
                 " - The server will send you a code through chat.\n"
-                " - Run `mc!verify <code>` to verify that you own the account."
+                " - Run `cc!verify <code>` to verify that you own the account."
             )
         else:
             await ctx.send(
