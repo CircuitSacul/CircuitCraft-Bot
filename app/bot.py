@@ -14,6 +14,7 @@ load_dotenv()
 EXTENSIONS = [
     "app.cogs.manage",
     "app.cogs.player",
+    "app.cogs.status",
     "jishaku",
 ]
 INTENTS: Intents = Intents.default()
