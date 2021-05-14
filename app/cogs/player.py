@@ -86,11 +86,8 @@ class Player(commands.Cog):
         result = result.strip()
         if "No targets matched selector" == result:
             await ctx.send(
-                "Please follow these steps:\n"
-                " - Join the server at IP `144.172.75.195` and port `5555`.\n"
-                f" - Run `cc!register {mc_username}` again.\n"
-                " - The server will send you a code through chat.\n"
-                " - Run `cc!verify <code>` to verify that you own the account."
+                "That user has not joined the verification server. "
+                "See <#842527586932097025> for instructions."
             )
         else:
             await ctx.send(
