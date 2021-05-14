@@ -1,6 +1,11 @@
+import os
+
 import discord
+from dotenv import load_dotenv
 from discord.ext import commands
 from app.mc_client import McClient
+
+load_dotenv()
 
 
 EXTENSIONS = [
@@ -20,7 +25,7 @@ class CCBot(commands.Bot):
         self.mc.launch()
         for ext in EXTENSIONS:
             self.load_extension(ext)
-        super().run("TOKEN")
+        super().run(os.getenv("TOKEN"))
 
     async def on_message(self, message: discord.Message):
         if message.author.bot:
