@@ -15,7 +15,7 @@ def random_code() -> str:
 class Player(commands.Cog):
     def __init__(self, bot: "CCBot"):
         self.bot = bot
-        self.codes: typing.Dict[int, typing.Tuple[str, str, int]] = {}
+        self.codes: typing.Dict[int, typing.List[str, str, int]] = {}
 
     @commands.command(
         name="register", aliases=["link"],
@@ -27,7 +27,7 @@ class Player(commands.Cog):
         if ctx.author.id in self.codes:
             del self.codes[ctx.author.id]
         code = random_code()
-        self.codes[ctx.author.id] = (mc_username, code, 0)
+        self.codes[ctx.author.id] = [mc_username, code, 0]
         result = await self.bot.rc.run_command(
             f"tell \"{mc_username}\" your code is {code}."
         )
@@ -68,6 +68,7 @@ class Player(commands.Cog):
             await ctx.send("Wrong code!")
         else:
             await ctx.send(f"You've verified that you own {mc_username}!")
+            del self.codes[ctx.author.id]
 
 
 def setup(bot: "CCBot"):
