@@ -14,6 +14,7 @@ load_dotenv()
 EXTENSIONS = [
     "app.cogs.manage",
     "app.cogs.player",
+    "jishaku",
 ]
 INTENTS: Intents = Intents.default()
 INTENTS.members = True
