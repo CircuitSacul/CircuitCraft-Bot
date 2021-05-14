@@ -15,17 +15,19 @@ def random_code() -> str:
 class Player(commands.Cog):
     def __init__(self, bot: "CCBot"):
         self.bot = bot
-        self.codes: typing.Dict[int, typing.Tuple[str, str]] = {}
+        self.codes: typing.Dict[int, typing.Tuple[str, str, int]] = {}
 
     @commands.command(
         name="register", aliases=["link"],
         brief="Sets your minecraft username."
     )
-    async def verify_username(self, ctx: commands.Context, *, mc_username):
+    async def register_username(
+        self, ctx: commands.Context, *, mc_username: str
+    ):
         if ctx.author.id in self.codes:
-            self.codes.pop(ctx.author.id)
+            del self.codes[ctx.author.id]
         code = random_code()
-        self.codes[ctx.author.id] = (mc_username, code)
+        self.codes[ctx.author.id] = (mc_username, code, 0)
         result = await self.bot.rc.run_command(
             f"tell \"{mc_username}\" your code is {code}."
         )
@@ -43,6 +45,29 @@ class Player(commands.Cog):
                 "I've send you a code through the Minecraft server. Run "
                 "`cc!verify <code>` to verify that you own this account."
             )
+
+    @commands.command(
+        name="verify",
+        brief="Verifies that you own an account."
+    )
+    async def verify_username(self, ctx: commands.Context, *, code: str):
+        try:
+            mc_username, real_code, attempts = self.codes[ctx.author.id]
+        except KeyError:
+            await ctx.send("Please run `cc!register <username>` first.")
+            return
+        if code != real_code:
+            if attempts >= 3:
+                await ctx.send(
+                    "This is the third failed attempt. You need to stat over "
+                    "by running `cc!register <username>`."
+                )
+                del self.codes[ctx.author.id]
+                return
+            self.codes[ctx.author.id][2] += 1
+            await ctx.send("Wrong code!")
+        else:
+            await ctx.send(f"You've verified that you own {mc_username}!")
 
 
 def setup(bot: "CCBot"):
