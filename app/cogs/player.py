@@ -8,8 +8,54 @@ if typing.TYPE_CHECKING:
     from app.bot import CCBot
 
 
+class AlreadyVerified(Exception):
+    def __init__(self, curr_username: str):
+        super().__init__(
+            f"You're already registered as {curr_username}! "
+            "Use mc!unregister if you want to unregister."
+        )
+
+
 def random_code() -> str:
     return "".join(random.choices(string.ascii_letters, k=5))
+
+
+async def raise_if_verified(bot: "CCBot", user_id: int):
+    rows = await bot.db.fetch("SELECT * FROM users WHERE id=?", (user_id,))
+    if not rows:
+        return
+    sql_user = rows[0]
+    if sql_user["mc_username"] is None:
+        return
+    raise AlreadyVerified(sql_user["mc_username"])
+
+
+async def verify(bot: "CCBot", user_id: int, mc_username: str):
+    rows = await bot.db.fetch("SELECT * FROM users WHERE id=?", (user_id,))
+    if not rows:
+        await bot.db.execute(
+            "INSERT INTO users VALUES (?, ?)", (user_id, mc_username,)
+        )
+    else:
+        sql_user = rows[0]
+        if sql_user["mc_username"] is not None:
+            raise AlreadyVerified(sql_user["mc_username"])
+        await bot.db.execute(
+            "UPDATE users SET mc_username=? WHERE id=?",
+            (mc_username, user_id,)
+        )
+    await bot.mc.run_command(f"whitelist add \"{mc_username}\"")
+
+
+async def unverify(bot: "CCBot", user_id: int):
+    rows = await bot.db.fetch("SELECT * FROM users WHERE id=?", (user_id,))
+    if not rows:
+        return
+    sql_user = rows[0]
+    await bot.mc.run_command(f"whitelist remove \"{sql_user['mc_username']}\"")
+    await bot.db.execute(
+        "UPDATE users SET mc_username=? WHERE id=?", (None, user_id,)
+    )
 
 
 class Player(commands.Cog):
@@ -24,6 +70,7 @@ class Player(commands.Cog):
     async def register_username(
         self, ctx: commands.Context, *, mc_username: str
     ):
+        await raise_if_verified(ctx.author.id)
         if ctx.author.id in self.codes:
             del self.codes[ctx.author.id]
         code = random_code()
@@ -47,10 +94,19 @@ class Player(commands.Cog):
             )
 
     @commands.command(
+        name="unverify", aliases=["unregister"],
+        help="Unregisters you and removes your MC account from the whitelist."
+    )
+    async def unverify_user(self, ctx: commands.Context):
+        await unverify(self.bot, ctx.author.id)
+        await ctx.send("You've been unverified!")
+
+    @commands.command(
         name="verify",
         brief="Verifies that you own an account."
     )
     async def verify_username(self, ctx: commands.Context, *, code: str):
+        await raise_if_verified(ctx.author.id)
         try:
             mc_username, real_code, attempts = self.codes[ctx.author.id]
         except KeyError:
@@ -67,6 +123,7 @@ class Player(commands.Cog):
             self.codes[ctx.author.id][2] += 1
             await ctx.send("Wrong code!")
         else:
+            await verify(self.bot, ctx.author.id, mc_username)
             await ctx.send(f"You've verified that you own {mc_username}!")
             del self.codes[ctx.author.id]
 

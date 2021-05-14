@@ -1,3 +1,4 @@
+from app.database import Database
 import os
 
 import discord
@@ -22,6 +23,7 @@ class CCBot(commands.Bot):
         )
         self.mc = McClient("~/circuitcraft")
         self.rc = McClient("~/verifycraft")
+        self.db = Database()
 
     def run(self):
         self.mc.launch()
@@ -29,6 +31,10 @@ class CCBot(commands.Bot):
         for ext in EXTENSIONS:
             self.load_extension(ext)
         super().run(os.getenv("TOKEN"))
+
+    async def start(self, *args, **kwargs):
+        await self.db.init()
+        await super().start(*args, **kwargs)
 
     async def on_message(self, message: discord.Message):
         if message.author.bot:
