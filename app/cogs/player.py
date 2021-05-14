@@ -147,7 +147,7 @@ class Player(commands.Cog):
             """SELECT * FROM users WHERE id=?""",
             (user.id,)
         )
-        if not rows or rows["mc_username"] is None:
+        if not rows or rows[0]["mc_username"] is None:
             return await ctx.send(
                 "That user has not linked their account yet!"
             )
