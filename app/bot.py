@@ -1,3 +1,4 @@
+from discord.flags import Intents
 from discord.mentions import AllowedMentions
 from app.database import Database
 import os
@@ -14,6 +15,8 @@ EXTENSIONS = [
     "app.cogs.manage",
     "app.cogs.player",
 ]
+INTENTS: Intents = Intents.default()
+INTENTS.members = True
 
 
 class CCBot(commands.Bot):
@@ -21,7 +24,8 @@ class CCBot(commands.Bot):
         super().__init__(
             command_prefix="cc!",
             case_insensitive=True,
-            allowed_mentions=AllowedMentions.none()
+            allowed_mentions=AllowedMentions.none(),
+            intents=INTENTS
         )
         self.mc = McClient("~/circuitcraft")
         self.rc = McClient("~/verifycraft")
