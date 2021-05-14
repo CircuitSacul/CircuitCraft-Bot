@@ -20,7 +20,7 @@ class McClient:
         for line in iter(self.proc.stdout.readline, b""):
             line = line.decode()
             self.outq.append(line)
-            print(line)
+            print(line, end="")
 
     def launch(self):
         if self.proc:
