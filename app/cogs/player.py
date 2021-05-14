@@ -41,7 +41,7 @@ class Player(commands.Cog):
         else:
             await ctx.send(
                 "I've send you a code through the Minecraft server. Run "
-                "`mc!verify <code>` to verify that you own this account."
+                "`cc!verify <code>` to verify that you own this account."
             )
 
 
