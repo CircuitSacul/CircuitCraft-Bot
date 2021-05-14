@@ -29,7 +29,7 @@ class McClient:
     def _sender_thread(self):
         while self.running:
             time.sleep(3)
-            to_send = "\n".join([lin.strip for lin in self.to_log])
+            to_send = "\n".join([lin.strip() for lin in self.to_log])
             if to_send:
                 self.bot.logging_hook.send(to_send)
 
