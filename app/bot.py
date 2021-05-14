@@ -1,3 +1,4 @@
+from discord.mentions import AllowedMentions
 from app.database import Database
 import os
 
@@ -19,7 +20,8 @@ class CCBot(commands.Bot):
     def __init__(self):
         super().__init__(
             command_prefix="cc!",
-            case_insensitive=True
+            case_insensitive=True,
+            allowed_mentions=AllowedMentions.none()
         )
         self.mc = McClient("~/circuitcraft")
         self.rc = McClient("~/verifycraft")
