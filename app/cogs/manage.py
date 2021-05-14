@@ -17,7 +17,8 @@ class Manage(commands.Cog):
     )
     @mc_mod()
     async def run_mc(self, ctx: commands.Context, *, command: str):
-        result = self.bot.mc.run_command(command)
+        async with ctx.typing():
+            result = self.bot.mc.run_command(command)
         await ctx.send(f"Done!\n```\n{result}```")
 
 

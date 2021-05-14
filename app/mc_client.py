@@ -1,5 +1,6 @@
 import subprocess
 import threading
+import asyncio
 from typing import List
 
 
@@ -17,6 +18,7 @@ class McClient:
 
     def _out_reader(self):
         for line in iter(self.proc.stdout.readline, b""):
+            line = line.decode()
             self.outq.append(line)
             print(line)
 
@@ -40,8 +42,9 @@ class McClient:
         self.proc = None
         self.outq_read_thread = None
 
-    def run_command(self, command_str: str) -> str:
+    async def run_command(self, command_str: str) -> str:
         self.outq = []
         self.proc.stdin.write(bytes(command_str + "\n", "utf8"))
         self.proc.stdin.flush()
+        await asyncio.sleep(0.24)
         return "\n".join(self.outq)
