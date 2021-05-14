@@ -46,5 +46,5 @@ class McClient:
         self.outq = []
         self.proc.stdin.write(bytes(command_str + "\n", "utf8"))
         self.proc.stdin.flush()
-        await asyncio.sleep(0.24)
+        await asyncio.sleep(0.5)
         return "".join(self.outq)
