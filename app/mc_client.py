@@ -1,6 +1,7 @@
 import subprocess
 import threading
 import asyncio
+import time
 from typing import List, TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -20,14 +21,21 @@ class McClient:
         self.proc: subprocess.Popen[str] = None
 
         self.outq: List[str] = []
+        self.to_log: List[str] = []
         self.outq_read_thread: threading.Thread = None
+
+    def _sender_thread(self):
+        while True:
+            time.sleep(3)
+            to_send = "\n".join([lin.strip for lin in self.to_log])
+            self.bot.logging_hook.send(to_send)
 
     def _out_reader(self):
         for line in iter(self.proc.stdout.readline, b""):
             line: str = line.decode()
             self.outq.append(line)
+            self.to_log.append(line)
             print(line, end="")
-            self.bot.logging_hook.send(line.strip())
 
     def launch(self):
         if self.proc:
