@@ -22,7 +22,8 @@ class Player(commands.Cog):
         brief="Sets your minecraft username."
     )
     async def verify_username(self, ctx: commands.Context, *, mc_username):
-        self.codes.pop(ctx.author.id)
+        if ctx.author.id in self.codes:
+            self.codes.pop(ctx.author.id)
         code = random_code()
         self.codes[ctx.author.id] = (mc_username, code)
         result = await self.bot.rc.run_command(
