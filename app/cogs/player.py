@@ -27,7 +27,7 @@ class Player(commands.Cog):
         code = random_code()
         self.codes[ctx.author.id] = (mc_username, code)
         result = await self.bot.rc.run_command(
-            f"whisper \"{mc_username}\" your code is {code}."
+            f"tell \"{mc_username}\" your code is {code}."
         )
         result = result.strip()
         if "No targets matched selector" == result:
