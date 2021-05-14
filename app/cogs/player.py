@@ -2,6 +2,7 @@ import typing
 import string
 import random
 
+import discord
 from discord.ext import commands
 
 if typing.TYPE_CHECKING:
@@ -126,6 +127,58 @@ class Player(commands.Cog):
             await verify(self.bot, ctx.author.id, mc_username)
             await ctx.send(f"You've verified that you own {mc_username}!")
             del self.codes[ctx.author.id]
+
+    @commands.group(
+        name="whois",
+        help="Gets information on a Minecraft or Discord account.",
+        invoke_without_command=True
+    )
+    async def whois(self, ctx: commands.Context):
+        await ctx.send_help(ctx.command)
+
+    @whois.command(
+        name="discord", aliases=["d"],
+        help="Gets information on a Discord account."
+    )
+    async def whois_discord(
+        self, ctx: commands.Context, *, user: discord.User
+    ):
+        rows = await self.bot.db.fetch(
+            """SELECT * FROM users WHERE id=?""",
+            (user.id,)
+        )
+        if not rows or rows["mc_username"] is None:
+            return await ctx.send(
+                "That user has not linked their account yet!"
+            )
+        sql_user = rows[0]
+        await ctx.send(
+            f"{user}'s Minecraft name is {sql_user['mc_username']}."
+        )
+
+    @whois.command(
+        name="minecraft", aliases=["m", "mc"],
+        help="Gets information on a Minecraft user."
+    )
+    async def whois_minecraft(
+        self, ctx: commands.Context, *, username: str
+    ):
+        rows = await self.bot.db.fetch(
+            """SELECT * FROM users WHERE mc_username=?""",
+            (username,)
+        )
+        if not rows:
+            return await ctx.send(
+                "Either that is not a valid user, or that user "
+                "has not linked their discord account."
+            )
+        sql_user = rows[0]
+        discord_id = int(sql_user["id"])
+        discord_user = await self.bot.fetch_user(discord_id)
+        await ctx.send(
+            f"{username}'s discord account is {discord_user} "
+            f"| {discord_user.mention}."
+        )
 
 
 def setup(bot: "CCBot"):
