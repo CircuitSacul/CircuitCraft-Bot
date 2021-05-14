@@ -19,7 +19,7 @@ class Status(commands.Cog):
         number = re.search(
             r"There are (\d)\/\d+ players online", string
         ).group(1)
-        inflection = "person" if number == 1 else "people"
+        inflection = "person" if number == "1" else "people"
         await self.bot.change_presence(
             activity=discord.Activity(
                 type=discord.ActivityType.watching,
