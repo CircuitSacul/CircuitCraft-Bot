@@ -70,7 +70,7 @@ class Player(commands.Cog):
     async def register_username(
         self, ctx: commands.Context, *, mc_username: str
     ):
-        await raise_if_verified(ctx.author.id)
+        await raise_if_verified(self.bot, ctx.author.id)
         if ctx.author.id in self.codes:
             del self.codes[ctx.author.id]
         code = random_code()
@@ -106,7 +106,7 @@ class Player(commands.Cog):
         brief="Verifies that you own an account."
     )
     async def verify_username(self, ctx: commands.Context, *, code: str):
-        await raise_if_verified(ctx.author.id)
+        await raise_if_verified(self.bot, ctx.author.id)
         try:
             mc_username, real_code, attempts = self.codes[ctx.author.id]
         except KeyError:
