@@ -26,10 +26,11 @@ class McClient:
         self.outq_read_thread = threading.Thread(target=self._out_reader)
         self.outq_read_thread.start()
         self.proc = subprocess.Popen(
-            ["cd", "~/circuitcraft", "&&", "./bedrock_server"],
+            ["./bedrock_server"],
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
+            cwd="~/circuitcraft"
         )
 
     def close(self):
