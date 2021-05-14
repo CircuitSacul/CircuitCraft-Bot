@@ -27,7 +27,7 @@ class Player(commands.Cog):
         if ctx.author.id in self.codes:
             del self.codes[ctx.author.id]
         code = random_code()
-        self.codes[ctx.author.id] = [mc_username, code, 0]
+        self.codes[ctx.author.id] = [mc_username, code, 1]
         result = await self.bot.rc.run_command(
             f"tell \"{mc_username}\" your code is {code}."
         )
