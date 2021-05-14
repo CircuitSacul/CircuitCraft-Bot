@@ -30,7 +30,7 @@ class McClient:
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
-            cwd="~/circuitcraft"
+            cwd="circuitcraft/"
         )
 
     def close(self):
