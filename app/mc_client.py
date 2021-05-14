@@ -23,12 +23,15 @@ class McClient:
         self.outq: List[str] = []
         self.to_log: List[str] = []
         self.outq_read_thread: threading.Thread = None
+        self.logger_thread: threading.Thread = None
+        self.running = False
 
     def _sender_thread(self):
-        while True:
+        while self.running:
             time.sleep(3)
             to_send = "\n".join([lin.strip for lin in self.to_log])
-            self.bot.logging_hook.send(to_send)
+            if to_send:
+                self.bot.logging_hook.send(to_send)
 
     def _out_reader(self):
         for line in iter(self.proc.stdout.readline, b""):
@@ -41,6 +44,8 @@ class McClient:
         if self.proc:
             raise AlreadyRunnning()
 
+        self.running = True
+
         self.proc = subprocess.Popen(
             [f"cd {self.path} && ./bedrock_server"],
             stdin=subprocess.PIPE,
@@ -50,12 +55,17 @@ class McClient:
         )
         self.outq_read_thread = threading.Thread(target=self._out_reader)
         self.outq_read_thread.start()
+        self.logger_thread = threading.Thread(target=self._sender_thread)
+        self.logger_thread.start()
 
     def close(self):
+        self.running = False
         self.proc.terminate()
         self.outq_read_thread.join()
+        self.logger_thread.join()
         self.proc = None
         self.outq_read_thread = None
+        self.logger_thread = None
 
     async def run_command(self, command_str: str) -> str:
         self.outq = []
