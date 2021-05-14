@@ -23,7 +23,7 @@ class Status(commands.Cog):
         await self.bot.change_presence(
             activity=discord.Activity(
                 type=discord.ActivityType.watching,
-                name=f"{number} {inflection} playing CircuitCraft"
+                name=f"{number} {inflection} play CircuitCraft"
             )
         )
 
