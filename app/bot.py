@@ -47,4 +47,8 @@ class CCBot(commands.Bot):
         await self.process_commands(message)
 
     async def on_command_error(self, ctx: commands.Context, err: Exception):
+        try:
+            err = err.original
+        except KeyError:
+            pass
         await ctx.send(err)
