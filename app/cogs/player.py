@@ -64,6 +64,10 @@ class Player(commands.Cog):
         self.bot = bot
         self.codes: typing.Dict[int, typing.List[str, str, int]] = {}
 
+    @commands.Cog.listener()
+    async def on_member_leave(self, member: discord.Member):
+        await unverify(self.bot, member.id)
+
     @commands.command(
         name="register", aliases=["link"],
         brief="Sets your minecraft username."
