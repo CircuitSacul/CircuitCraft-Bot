@@ -23,8 +23,6 @@ class McClient:
         if self.proc:
             raise AlreadyRunnning()
 
-        self.outq_read_thread = threading.Thread(target=self._out_reader)
-        self.outq_read_thread.start()
         self.proc = subprocess.Popen(
             ["cd ~/circuitcraft && ./bedrock_server"],
             stdin=subprocess.PIPE,
@@ -32,6 +30,8 @@ class McClient:
             stderr=subprocess.PIPE,
             shell=True,
         )
+        self.outq_read_thread = threading.Thread(target=self._out_reader)
+        self.outq_read_thread.start()
 
     def close(self):
         self.proc.terminate()
