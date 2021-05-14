@@ -29,6 +29,11 @@ class CCBot(commands.Bot):
             allowed_mentions=AllowedMentions.none(),
             intents=INTENTS
         )
+
+        self.logging_hook = discord.Webhook.from_url(
+            os.getenv("WEBHOOK"), adapter=discord.RequestsWebhookAdapter()
+        )
+
         self.mc = McClient("~/circuitcraft")
         self.rc = McClient("~/verifycraft")
         self.db = Database()

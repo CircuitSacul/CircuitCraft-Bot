@@ -1,7 +1,10 @@
 import subprocess
 import threading
 import asyncio
-from typing import List
+from typing import List, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from app.bot import CCBot
 
 
 class AlreadyRunnning(Exception):
@@ -10,7 +13,8 @@ class AlreadyRunnning(Exception):
 
 
 class McClient:
-    def __init__(self, path: str):
+    def __init__(self, path: str, bot: "CCBot"):
+        self.bot = bot
         self.path = path
 
         self.proc: subprocess.Popen[str] = None
@@ -20,9 +24,10 @@ class McClient:
 
     def _out_reader(self):
         for line in iter(self.proc.stdout.readline, b""):
-            line = line.decode()
+            line: str = line.decode()
             self.outq.append(line)
             print(line, end="")
+            self.bot.logging_hook.send(line.strip())
 
     def launch(self):
         if self.proc:
