@@ -16,9 +16,12 @@ class Status(commands.Cog):
     async def update_status(self):
         await self.bot.wait_until_ready()
         string = await self.bot.mc.run_command("list")
-        number = re.search(
+        match = re.search(
             r"There are (\d*)\/\d+ players online", string
-        ).group(1)
+        )
+        if not match:
+            return
+        number = match.group(1)
         inflection = "person" if number == "1" else "people"
         await self.bot.change_presence(
             activity=discord.Activity(
