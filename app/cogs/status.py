@@ -17,7 +17,7 @@ class Status(commands.Cog):
         await self.bot.wait_until_ready()
         string = await self.bot.mc.run_command("list")
         number = re.search(
-            r"There are (\d)\/\d+ players online", string
+            r"There are (\d*)\/\d+ players online", string
         ).group(1)
         inflection = "person" if number == "1" else "people"
         await self.bot.change_presence(

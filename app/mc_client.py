@@ -2,6 +2,7 @@ import subprocess
 import threading
 import asyncio
 import time
+import re
 from typing import List, TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -37,7 +38,11 @@ class McClient:
 
     def _out_reader(self):
         for line in iter(self.proc.stdout.readline, b""):
-            line: str = line.decode()
+            line: str = line.decode().strip()
+            if line == "[INFO] Running AutoCompaction...":
+                continue
+            elif re.match(r"There are \d*\/\d* players online:", line):
+                continue
             self.outq.append(line)
             self.to_log.append(line)
             print(line, end="")
