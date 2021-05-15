@@ -45,7 +45,7 @@ class McClient:
                 continue
             self.outq.append(line)
             self.to_log.append(line)
-            print(line, end="")
+            print(line)
 
     def launch(self):
         if self.proc:
