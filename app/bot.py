@@ -14,7 +14,6 @@ load_dotenv()
 EXTENSIONS = [
     "app.cogs.manage",
     "app.cogs.player",
-    "app.cogs.status",
     "jishaku",
 ]
 INTENTS: Intents = Intents.default()
@@ -27,7 +26,11 @@ class CCBot(commands.Bot):
             command_prefix="cc!",
             case_insensitive=True,
             allowed_mentions=AllowedMentions.none(),
-            intents=INTENTS
+            intents=INTENTS,
+            activity=discord.Activity(
+                type=discord.ActivityType.watching,
+                name="People play CircuitCraft"
+            )
         )
 
         self.logging_hook = discord.Webhook.from_url(
