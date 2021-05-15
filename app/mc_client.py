@@ -41,10 +41,9 @@ class McClient:
             line: str = line.decode().strip()
             if line == "[INFO] Running AutoCompaction...":
                 continue
-            elif re.match(r"There are \d*\/\d* players online:", line):
-                continue
+            if not re.match(r"There are \d*\/\d* players online:", line):
+                self.to_log.append(line)
             self.outq.append(line)
-            self.to_log.append(line)
             print(line)
 
     def launch(self):
