@@ -37,8 +37,8 @@ class CCBot(commands.Bot):
             os.getenv("WEBHOOK"), adapter=discord.RequestsWebhookAdapter()
         )
 
-        self.mc = McClient("~/circuitcraft", self)
-        self.rc = McClient("~/verifycraft", self)
+        self.mc = McClient("~/circuitcraft", "[CircuitCraft] ", self)
+        self.rc = McClient("~/verifycraft", "[Verification] ", self)
         self.db = Database()
 
     def run(self):

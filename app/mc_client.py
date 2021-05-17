@@ -14,9 +14,10 @@ class AlreadyRunnning(Exception):
 
 
 class McClient:
-    def __init__(self, path: str, bot: "CCBot"):
+    def __init__(self, path: str, name: str, bot: "CCBot"):
         self.bot = bot
         self.path = path
+        self.name = name
 
         self.proc: subprocess.Popen[str] = None
 
@@ -40,7 +41,8 @@ class McClient:
             line: str = line.decode().strip()
             if line == "[INFO] Running AutoCompaction...":
                 continue
-            self.to_log.append(line)
+            if line.startswith("[INFO]"):
+                self.to_log.append(self.name + line)
             self.outq.append(line)
             print(line)
 
